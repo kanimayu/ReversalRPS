@@ -114,6 +114,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
             {
                 // 逆転返し
                 gameUI.ShowTurnResult("逆転返し");
+                gameUI.ReverseBG(true);
                 yield return new WaitForSeconds(0.8f);
                 fieldIsReversed = false;
             }
@@ -124,8 +125,10 @@ public class GameMaster : MonoBehaviourPunCallbacks
             {
                 // 一発逆転返し
                 gameUI.ShowTurnResult("逆転");
+                gameUI.ReverseBG(false);
                 yield return new WaitForSeconds(0.8f);
                 gameUI.ShowTurnResult("逆転返し");
+                gameUI.ReverseBG(true);
                 yield return new WaitForSeconds(0.8f);
                 fieldIsReversed = false;
             }
@@ -133,33 +136,23 @@ public class GameMaster : MonoBehaviourPunCallbacks
             {
                 // 逆転
                 gameUI.ShowTurnResult("逆転");
+                gameUI.ReverseBG(false);
                 yield return new WaitForSeconds(0.8f);
                 fieldIsReversed = true;
             }
 
         }
 
-        Result result = rulebook.GetResult(player, enemy);
+        Result result = rulebook.GetResult(player, enemy, fieldIsReversed);
         switch (result)
         {
-
-            case Result.TurnWin2:
-                gameUI.ShowTurnResult("WIN");
-                enemy.Life -= 2;
-                break;
             case Result.TurnWin:
-            case Result.GameWin:
                 gameUI.ShowTurnResult("WIN");
                 enemy.Life--;
                 break;
             case Result.TurnLose:
-            case Result.GameLose:
                 gameUI.ShowTurnResult("LOSE");
                 player.Life--;
-                break;
-            case Result.TurnLose2:
-                gameUI.ShowTurnResult("WIN");
-                player.Life -= 2;
                 break;
             case Result.TurnDraw:
                 gameUI.ShowTurnResult("DRAW");
