@@ -56,7 +56,6 @@ public class Card : MonoBehaviour
         //transform.position -= Vector3.up * 0.3f;
         transform.localScale = Vector3.one;
         GetComponentInChildren<Canvas>().sortingLayerName = "Default";
-
     }
     public void Open()
     {
