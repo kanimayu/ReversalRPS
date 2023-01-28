@@ -21,8 +21,8 @@ public class Deck : MonoBehaviour
         list.Sort((card0, card1) => card0.Base.Number - card1.Base.Number);
         for (int i = 0; i < list.Count; i++)
         {
-            float posX = (i - list.Count / 10f + 0.5f);
-            list[i].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
+            float posX = (i - list.Count / 0.5f);
+            list[i].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             list[i].transform.localPosition = new Vector3(posX, 0);
         }
     }

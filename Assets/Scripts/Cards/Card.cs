@@ -17,6 +17,7 @@ public class Card : MonoBehaviour
     [SerializeField] GameObject hidePanel;
 
     public CardBase Base { get; private set; }
+    public string getName { get => nameText.text; }
 
     public UnityAction<Card> OnClickCard;
 

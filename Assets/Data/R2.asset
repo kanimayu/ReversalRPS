@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5c6508575054f1e94b0cb24a05a2db, type: 3}
   m_Name: R2
   m_EditorClassIdentifier: 
-  name: Rock2
+  name: R2
   number: 6
   level: 2
   type: 0

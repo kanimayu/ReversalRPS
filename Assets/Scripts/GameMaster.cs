@@ -12,6 +12,8 @@ public class GameMaster : MonoBehaviourPunCallbacks
     [SerializeField] CardGenerator cardGenerator;
     [SerializeField] GameUI gameUI;
     [SerializeField] Deck deck;
+    [SerializeField] Trash trash;
+
     RuleBook rulebook;
     bool playerRetryReady;
     bool enemyRetryReady;
@@ -47,6 +49,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
         SendCardsTo(player, isEnemy: false, deck);
         SendCardsTo(enemy, isEnemy: true, deck);
         deck.ResetPosition();
+        OpenFinalCard(deck);
         player.Hand.ResetPosition();
         if (GameDataManager.Instance.IsOnlineBattle == true)
         {
@@ -101,6 +104,13 @@ public class GameMaster : MonoBehaviourPunCallbacks
         battler.Hand.ResetPosition();
     }
 
+    void OpenFinalCard(Deck deck)
+    {
+        Card card = deck.RandomRemove();
+        card.Open();
+        trash.Add(card);
+    }
+
     // Update is called once per frame
     IEnumerator CardsBattle()
     {
@@ -115,7 +125,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
                 // 逆転返し
                 gameUI.ShowTurnResult("逆転返し");
                 gameUI.ReverseBG(true);
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(1.5f);
                 fieldIsReversed = false;
             }
         }
@@ -126,10 +136,10 @@ public class GameMaster : MonoBehaviourPunCallbacks
                 // 一発逆転返し
                 gameUI.ShowTurnResult("逆転");
                 gameUI.ReverseBG(false);
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(1.5f);
                 gameUI.ShowTurnResult("逆転返し");
                 gameUI.ReverseBG(true);
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(1.5f);
                 fieldIsReversed = false;
             }
             else if (player.IsReversed || enemy.IsReversed)
@@ -137,7 +147,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
                 // 逆転
                 gameUI.ShowTurnResult("逆転");
                 gameUI.ReverseBG(false);
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(1.5f);
                 fieldIsReversed = true;
             }
 
@@ -159,7 +169,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
                 break;
 
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         gameUI.ShowLifes(player.Life, enemy.Life);
 
         if (player.Life <= 0 || enemy.Life <= 0 || result == Result.GameWin || result == Result.GameLose)
@@ -191,6 +201,8 @@ public class GameMaster : MonoBehaviourPunCallbacks
 
     void SetupNextTurn()
     {
+        trash.Add(player.SubmitCard);
+        trash.Add(enemy.SubmitCard);
         player.SetupNextTurn();
         enemy.SetupNextTurn();
         gameUI.SetupNextTurn();

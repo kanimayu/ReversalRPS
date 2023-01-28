@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5c6508575054f1e94b0cb24a05a2db, type: 3}
   m_Name: P2
   m_EditorClassIdentifier: 
-  name: Paper2
+  name: P2
   number: 2
   level: 2
   type: 1

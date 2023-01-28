@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a5c6508575054f1e94b0cb24a05a2db, type: 3}
   m_Name: R1
   m_EditorClassIdentifier: 
-  name: Rock1
+  name: R1
   number: 5
   level: 1
   type: 0
