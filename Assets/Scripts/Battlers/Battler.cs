@@ -12,6 +12,7 @@ public class Battler : MonoBehaviour
 {
     [SerializeField] BattlerHand hand;
     [SerializeField] SubmitPosition submitPosition;
+    [SerializeField] ReversalPosition reversalPosition;
     [SerializeField] GameObject submitButton;
     [SerializeField] GameObject reverseButton;
     public bool IsSubmitted { get; private set; }
@@ -21,6 +22,7 @@ public class Battler : MonoBehaviour
 
     public BattlerHand Hand { get => hand; }
     public Card SubmitCard { get => submitPosition.SubmitCard; }
+    public Card ReversalCard { get => reversalPosition.ReversalCard; }
     public int Life { get; set; }
 
     public void Start()
@@ -36,6 +38,11 @@ public class Battler : MonoBehaviour
     {
         hand.Add(card);
         card.OnClickCard = SelectedCard;
+    }
+
+    public void SetCardToReversal(Card card)
+    {
+        reversalPosition.Set(card);
     }
 
     void SelectedCard(Card card)
@@ -87,6 +94,10 @@ public class Battler : MonoBehaviour
 
     public void RandomSubmit()
     {
+        if (!IsReversed && Random.Range(1, 5) > 0)
+        {
+            IsReversed = true;
+        }
         Card card = hand.RandomRemove();
         submitPosition.Set(card);
         IsSubmitted = true;
@@ -96,6 +107,10 @@ public class Battler : MonoBehaviour
 
     public void SetupNextTurn()
     {
+        if (IsReversed)
+        {
+            reversalPosition.DeleteCard();
+        }
         submitPosition.DeleteCard();
         IsSubmitted = false;
         if (reverseButton && CanReverse)

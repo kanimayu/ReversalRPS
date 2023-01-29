@@ -21,7 +21,7 @@ public class Deck : MonoBehaviour
         list.Sort((card0, card1) => card0.Base.Number - card1.Base.Number);
         for (int i = 0; i < list.Count; i++)
         {
-            float posX = (i - list.Count / 0.5f);
+            float posX = 0;
             list[i].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             list[i].transform.localPosition = new Vector3(posX, 0);
         }
@@ -30,6 +30,7 @@ public class Deck : MonoBehaviour
     public Card RandomRemove()
     {
         int r = Random.Range(0, list.Count);
+        Debug.Log(r);
         Card card = list[r];
         Remove(card);
         return card;

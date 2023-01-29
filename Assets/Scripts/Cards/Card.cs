@@ -62,10 +62,39 @@ public class Card : MonoBehaviour
     {
         if(hidePanel.activeSelf) StartCoroutine(OpenAnim());
     }
+
     IEnumerator OpenAnim()
     {
         yield return transform.DORotate(new Vector3(0, 90, 0), 0.2f).WaitForCompletion();
         hidePanel.SetActive(false);
         yield return transform.DORotate(new Vector3(0, 0, 0), 0.2f).WaitForCompletion();
     }
+
+    public void Trash()
+    {
+        StartCoroutine(TrashAnim());
+    }
+
+    public void OpenAndTrash()
+    {
+        if (hidePanel.activeSelf)
+        {
+            StartCoroutine(OpenAnim());
+        }
+        StartCoroutine(TrashWaitAnim());
+    }
+
+    IEnumerator TrashWaitAnim()
+    {
+        yield return new WaitForSeconds(1.5f);
+        yield return this.GetComponent<CanvasGroup>().DOFade(endValue: 0f, duration: 0.2f).WaitForCompletion();
+        Destroy(this.gameObject);
+    }
+
+    IEnumerator TrashAnim()
+    {
+        yield return this.GetComponent<CanvasGroup>().DOFade(endValue: 0f, duration: 0.2f).WaitForCompletion();
+        Destroy(this.gameObject);
+    }
+
 }

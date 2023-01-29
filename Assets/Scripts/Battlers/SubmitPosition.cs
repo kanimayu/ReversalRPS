@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening   ;
+using DG.Tweening;
 
 public class SubmitPosition : MonoBehaviour
 {
@@ -18,7 +18,6 @@ public class SubmitPosition : MonoBehaviour
 
     public void DeleteCard()
     {
-        Destroy(submitCard.gameObject);
         submitCard = null;
     }
 }
