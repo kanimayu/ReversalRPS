@@ -5,6 +5,7 @@ using UnityEngine;
 public class BattlerHand : MonoBehaviour
 {
     List<Card> list = new List<Card>();
+    List<Card> mulliganList = new List<Card>();
 
     public void Add(Card card)
     {
@@ -39,5 +40,11 @@ public class BattlerHand : MonoBehaviour
         Card card = list.Find(x => x.Base.Number == number);
         Remove(card);
         return card;
+    }
+
+    public void CheckMulligan(Card card)
+    {
+        list.Remove(card);
+        mulliganList.Add(card);
     }
 }

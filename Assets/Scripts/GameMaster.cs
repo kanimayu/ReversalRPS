@@ -154,6 +154,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
                         trash.Add(enemy.ReversalCard);
                         enemy.ReversalCard.OpenAndTrash();
                     }
+                    SEManager.Instance.Play(SEPath.SFX_SUMMONLEGENDARY);
                     // 逆転返し
                     gameUI.ShowTurnResult("逆転返し");
                     gameUI.ReverseBG(true);
@@ -166,12 +167,14 @@ public class GameMaster : MonoBehaviourPunCallbacks
             {
                 if (player.IsReversed && enemy.IsReversed)
                 {
+                    SEManager.Instance.Play(SEPath.SFX_SPELL_NATURALSELECTION);
                     // 一発逆転返し
                     gameUI.ShowTurnResult("逆転");
                     gameUI.ReverseBG(false);
                     trash.Add(player.ReversalCard);
                     player.ReversalCard.OpenAndTrash();
                     yield return new WaitForSeconds(1.5f);
+                    SEManager.Instance.Play(SEPath.SFX_SUMMONLEGENDARY);
                     gameUI.ShowTurnResult("逆転返し");
                     gameUI.ReverseBG(true);
                     trash.Add(enemy.ReversalCard);
@@ -182,6 +185,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
                 }
                 else if (player.IsReversed || enemy.IsReversed)
                 {
+                    SEManager.Instance.Play(SEPath.SFX_SPELL_NATURALSELECTION);
                     if (player.IsReversed)
                     {
                         trash.Add(player.ReversalCard);
@@ -205,10 +209,12 @@ public class GameMaster : MonoBehaviourPunCallbacks
         switch (result)
         {
             case Result.TurnWin:
+                SEManager.Instance.Play(SEPath.SFX_F3_ANUBIS_ATTACK_IMPACT);
                 gameUI.ShowTurnResult("WIN");
                 enemy.Life--;
                 break;
             case Result.TurnLose:
+                SEManager.Instance.Play(SEPath.SFX_NEUTRAL_ARTIFACTHUNTER_ATTACK_IMPACT);
                 gameUI.ShowTurnResult("LOSE");
                 player.Life--;
                 break;
@@ -224,13 +230,13 @@ public class GameMaster : MonoBehaviourPunCallbacks
         if (player.Life <= 0 || enemy.Life <= 0)
         {
             //KO
-            gameUI.SetupNextTurn();
+            SetupNextTurn();
             ShowResult(result);
         }
         else if (battleCount == 5)
         {
             //NextRound
-            gameUI.SetupNextTurn();
+            SetupNextTurn();
             ShowResult(result);
         }
         else
@@ -242,11 +248,12 @@ public class GameMaster : MonoBehaviourPunCallbacks
 
     void ShowResult(Result result)
     {
-        if (enemy.Life <= 0 || result == Result.GameWin)
+        SEManager.Instance.Play(SEPath.SFX_VICTORY_CREST);
+        if (enemy.Life < player.Life)
         {
             gameUI.ShowGameResult("WIN");
         }
-        else if (player.Life <= 0 || result == Result.GameLose)
+        else if (player.Life < enemy.Life)
         {
             gameUI.ShowGameResult("LOSE");
         }

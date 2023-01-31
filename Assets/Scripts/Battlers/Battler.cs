@@ -16,6 +16,7 @@ public class Battler : MonoBehaviour
     [SerializeField] GameObject submitButton;
     [SerializeField] GameObject reverseButton;
     public bool IsSubmitted { get; private set; }
+    public bool IsMulligan { get; private set; }
     public bool CanReverse { get; private set; }
     public bool IsReversed { get; private set; }
     public UnityAction OnSubmitAction;
@@ -48,14 +49,24 @@ public class Battler : MonoBehaviour
     void SelectedCard(Card card)
     {
         if (IsSubmitted) return;
-        if (submitPosition.SubmitCard)
+        if (IsMulligan)
         {
-            hand.Add(submitPosition.SubmitCard);
+            // マリガン時
+            hand.CheckMulligan(card);
+            submitButton?.SetActive(true);
         }
-        hand.Remove(card);
-        submitPosition.Set(card);
-        hand.ResetPosition();
-        submitButton?.SetActive(true);
+        else
+        {
+            // 通常時
+            if (submitPosition.SubmitCard)
+            {
+                hand.Add(submitPosition.SubmitCard);
+            }
+            hand.Remove(card);
+            submitPosition.Set(card);
+            hand.ResetPosition();
+            submitButton?.SetActive(true);
+        }
     }
 
     public void OnSubmitButton()
@@ -94,7 +105,7 @@ public class Battler : MonoBehaviour
 
     public void RandomSubmit()
     {
-        if (!IsReversed && Random.Range(1, 5) > 0)
+        if (!IsReversed && Random.Range(1, 5) > 3)
         {
             IsReversed = true;
         }
