@@ -130,8 +130,9 @@ public class Battler : MonoBehaviour
         }
     }
 
-    public void SetSubmitCard(int number)
+    public void EnemySetSubmitCard(int number,bool isReversed)
     {
+        IsReversed = isReversed;
         Card card = hand.Remove(number);
         submitPosition.Set(card);
         IsSubmitted = true;

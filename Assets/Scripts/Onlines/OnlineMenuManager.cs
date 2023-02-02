@@ -27,6 +27,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         matchingMessage.SetActive(true);
         cpuButton.SetActive(false);
         StartCoroutine(ShowCancelButton());
+        GameDataManager.Instance.IsOnlineBattle = true;
         // PhotonServerSettingsの設定内容を使ってマスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -46,6 +47,7 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
         cancelButton.SetActive(false);
         // 接続を切る
         inRoom = false;
+        GameDataManager.Instance.IsOnlineBattle = false;
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
     }
@@ -64,7 +66,24 @@ public class OnlineMenuManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2}, TypedLobby.Default);
+        var hashtable = new ExitGames.Client.Photon.Hashtable();
+        List<int> shuffleNumList = new List<int>(13);
+        for (int i = 0; i < 13; i++)
+        {
+            shuffleNumList.Add(i);
+        }
+        for (int i = 0; i < shuffleNumList.Count; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, shuffleNumList.Count);
+            int temp = shuffleNumList[i];
+            shuffleNumList[i] = shuffleNumList[randomIndex];
+            shuffleNumList[randomIndex] = temp;
+        }
+        for (int i = 0; i < 13; i++)
+        {
+            hashtable[i.ToString()] = shuffleNumList[i];
+        }
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2, CustomRoomProperties = hashtable}, TypedLobby.Default);
     }
 
     // 部屋が2人ならシーンを変える

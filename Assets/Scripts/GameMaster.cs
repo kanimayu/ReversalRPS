@@ -55,17 +55,44 @@ public class GameMaster : MonoBehaviourPunCallbacks
         player.OnSubmitAction = SubmittedAction;
         enemy.OnSubmitAction = SubmittedAction;
         SendCardsToDeck(deck);
-        SendCardsTo(player, isEnemy: false, deck);
-        SendCardsTo(enemy, isEnemy: true, deck);
-        SendReversalCardTo(player, isEnemy: false, deck);
-        SendReversalCardTo(enemy, isEnemy: true, deck);
+        if (GameDataManager.Instance != null)
+        {
+            Debug.Log("オンライン？" + GameDataManager.Instance.IsOnlineBattle);
+        }
+        if (GameDataManager.Instance != null && GameDataManager.Instance.IsOnlineBattle == true)
+        {
+            // オンライン
+            player.OnSubmitAction += SendPlayerCard;
+            // 乱数同期
+            deck.SyncShuffleNumList();
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.Log("自身がマスタークライアントです");
+                SendCardsTo(player, isEnemy: false, deck);
+                SendCardsTo(enemy, isEnemy: true, deck);
+                SendReversalCardTo(player, isEnemy: false, deck);
+                SendReversalCardTo(enemy, isEnemy: true, deck);
+            }
+            else
+            {
+                Debug.Log("自身がサブクライアントです");
+                SendCardsTo(enemy, isEnemy: true, deck);
+                SendCardsTo(player, isEnemy: false, deck);
+                SendReversalCardTo(enemy, isEnemy: true, deck);
+                SendReversalCardTo(player, isEnemy: false, deck);
+            }
+        }
+        else
+        {
+            // オフライン
+            SendCardsTo(player, isEnemy: false, deck);
+            SendCardsTo(enemy, isEnemy: true, deck);
+            SendReversalCardTo(player, isEnemy: false, deck);
+            SendReversalCardTo(enemy, isEnemy: true, deck);
+        }
         deck.ResetPosition();
         OpenFinalCard(deck);
         player.Hand.ResetPosition();
-        if (GameDataManager.Instance != null && GameDataManager.Instance.IsOnlineBattle == true)
-        {
-            player.OnSubmitAction += SendPlayerCard;
-        }
     }
 
     void SubmittedAction()
@@ -224,7 +251,7 @@ public class GameMaster : MonoBehaviourPunCallbacks
 
         }
         yield return new WaitForSeconds(1.5f);
-        battleCount ++;
+        battleCount++;
         gameUI.ShowLifes(player.Life, enemy.Life);
 
         if (player.Life <= 0 || enemy.Life <= 0)
@@ -276,13 +303,13 @@ public class GameMaster : MonoBehaviourPunCallbacks
 
     void SendPlayerCard()
     {
-        photonView.RPC(nameof(RPCOnRecievedCard), RpcTarget.Others, player.SubmitCard.Base.Number);
+        photonView.RPC(nameof(RPCOnRecievedCard), RpcTarget.Others, player.SubmitCard.Base.Number, player.IsReversed);
     }
 
     [PunRPC]
-    void RPCOnRecievedCard(int number)
+    void RPCOnRecievedCard(int number,bool isReversed)
     {
-        enemy.SetSubmitCard(number);
+        enemy.EnemySetSubmitCard(number, isReversed);
     }
 
     public void OnRetryButton()
